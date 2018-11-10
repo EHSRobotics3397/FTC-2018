@@ -42,22 +42,12 @@ public class MecanumDrive {
 
         gamepad = aGamepad;
 
-        buttonA      = new GameButton(gamepad, GameButton.Label.a);
-        buttonB      = new GameButton(gamepad, GameButton.Label.b);
-        buttonX      = new GameButton(gamepad, GameButton.Label.x);
-        left_Bumper  = new GameButton(gamepad, GameButton.Label.LBumper);
-        right_Bumper  = new GameButton(gamepad, GameButton.Label.RBumper);
         solver = new MecanumSolver();
     }
 
 
 
     public void update() { //Don't need Telemetry
-        buttonA.Update();
-        buttonB.Update();
-        buttonX.Update();
-        left_Bumper.Update();
-        right_Bumper.Update();
 
         final float MINTRIGGER = 0.01f;
         float rightTrigg = gamepad.right_trigger;
