@@ -71,9 +71,10 @@ public class MecanumDrive {
         xJoyVal = gamepad.left_stick_x;
 
         //if the trigger buttons are on, then we spin in stead of drive.
-        //to be added.
+        //Now the trigger buttons can be used while driving, theoretically
 
-        Matrix W = solver.solve(-yJoyVal, -xJoyVal, 0);
+        float rotationalVelocity = rightTrigg + -(leftTrigg);
+        Matrix W = solver.solve(-yJoyVal, -xJoyVal, rotationalVelocity);
 
         power[0] = W.element(0,0);
         power[1] = W.element(1,0);
@@ -85,7 +86,9 @@ public class MecanumDrive {
         motor3.setPower(power[2]);
         motor4.setPower(power[3]);
 
-        if (rightTrigg > MINTRIGGER)
+
+        // We wont need this code, Theoretically (Not tested without it yet)
+        /*if (rightTrigg > MINTRIGGER)
         {
             motor1.setPower(rightTrigg);
             motor2.setPower(rightTrigg);
@@ -98,7 +101,7 @@ public class MecanumDrive {
             motor2.setPower(-leftTrigg);
             motor3.setPower(leftTrigg);
             motor4.setPower(leftTrigg);
-        }
+        }*/
 
 
         //telemetry.addData("Motor#: ", String.format("%d", currentButton));

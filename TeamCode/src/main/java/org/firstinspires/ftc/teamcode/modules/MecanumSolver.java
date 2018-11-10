@@ -12,7 +12,7 @@ public class MecanumSolver {
     private double [][] _v = {{0, 0, 0}};
 
     //motor coordinates
-    double x1,x2,x3,x4,y1,y2,y3,y4;
+    private double x1,x2,x3,x4,y1,y2,y3,y4;
 
     double wheelRadius = 1.0;
 
