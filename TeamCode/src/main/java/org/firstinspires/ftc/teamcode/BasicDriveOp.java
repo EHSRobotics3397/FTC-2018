@@ -20,12 +20,14 @@ import org.firstinspires.ftc.teamcode.modules.*;
 public class BasicDriveOp extends OpMode {
 
     //Create driver object and Motor objects & Rotation Finder
+    //Also sets up device object
     private MecanumDrive driver;
     private DcMotor motor1;
     private DcMotor motor2;
     private DcMotor motor3;
     private DcMotor motor4;
     private IMURotate rotationFinder;
+    private BNO055IMU imu;
 
     public void init() {
         // Set values of driver and motor objects
@@ -50,6 +52,9 @@ public class BasicDriveOp extends OpMode {
     public void loop() {
         // Update Rotation Finder and Driver
         rotationFinder.update(telemetry);
-        driver.update(telemetry);
+        driver.update();
+        /*Finite State machine will be used in Auto
+        and maybe Main Op
+         */
     }
 }
