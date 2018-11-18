@@ -3,13 +3,9 @@ package org.firstinspires.ftc.teamcode.modules;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import java.util.Locale;
 
 /**
  * Created by greenteam on 1/27/18.
@@ -18,6 +14,12 @@ import java.util.Locale;
 public class ColorSensing {
     private ColorSensor sensorColor;
     private DistanceSensor sensorDistance;
+    private double distance;
+    private int alpha;
+    private int red;
+    private int green;
+    private int blue;
+    private float[] hue;
 
     public void setup(ColorSensor aSensor, DistanceSensor aDistanceSensor)
     {
@@ -25,25 +27,37 @@ public class ColorSensing {
         sensorDistance = aDistanceSensor;
     }
 
-    public void update(Telemetry telemetry)
+    public void update()
     {
         final double SCALE_FACTOR = 255;
         float hsvValues[] = {0F, 0F, 0F};
 
         int alph = (int)(sensorColor.alpha() * SCALE_FACTOR);
-        int red = (int)(sensorColor.red() * SCALE_FACTOR);
-        int green = (int)(sensorColor.green() * SCALE_FACTOR);
-        int blue = (int)(sensorColor.blue() * SCALE_FACTOR);
+        int rd = (int)(sensorColor.red() * SCALE_FACTOR);
+        int gren = (int)(sensorColor.green() * SCALE_FACTOR);
+        int ble = (int)(sensorColor.blue() * SCALE_FACTOR);
 
         Color.RGBToHSV((red), (green), (blue), hsvValues);
 
-        telemetry.addData("Distance (cm)",
-                String.format(Locale.US, "%.02f", sensorDistance.getDistance(DistanceUnit.CM)));
-        telemetry.addData("Alpha", alph);
-        telemetry.addData("Red  ", red);
-        telemetry.addData("Green", green);
-        telemetry.addData("Blue ", blue);
-        telemetry.addData("Hue", hsvValues[0]);
+        distance = sensorDistance.getDistance(DistanceUnit.CM);
+        alpha = alph;
+        red = rd;
+        green = gren;
+        blue = ble;
+        hue = hsvValues;
 
+    }
+
+    public int[] getColors() {
+        int[] colors = {alpha, red, green, blue};
+        return colors;
+    }
+
+    public float[] getHue() {
+        return hue;
+    }
+
+    public double getDistance() {
+        return distance;
     }
 }

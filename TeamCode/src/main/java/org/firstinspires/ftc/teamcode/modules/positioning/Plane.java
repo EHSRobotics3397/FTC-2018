@@ -5,20 +5,22 @@ import java.util.List;
 
 public class Plane {
     // define public variables
-    public int MAX_X;
-    public int MAX_Y;
-    public int MIN_X;
-    public int MIN_Y;
+    public static int MAX_X;
+    public static int MAX_Y;
+    public static int MIN_X;
+    public static int MIN_Y;
 
     // define private variables
-    // ArrayList object is used be cuase it supports .add
+    // ArrayList object is used because it supports .add
     private List<PhysObject> knownObjects = new ArrayList<>();
+    private Coordinates robotPos;
 
     public Plane (int maxX, int maxY, int minX, int minY) {
         MAX_X = maxX;
         MAX_Y = maxY;
         MIN_X = minX;
         MIN_Y = minY;
+        robotPos = new Coordinates(1,1);
     }
 
     /*
@@ -28,8 +30,9 @@ public class Plane {
         by a shape recognition class
      */
 
-    public void addPhysObject (PhysObject phys) {
+    public void update (PhysObject phys, Coordinates rp) {
         knownObjects.add(phys);
+        robotPos = rp;
     }
 
     public boolean isObjectAt(Coordinates coords) {
@@ -53,7 +56,7 @@ public class Plane {
         List<Line> lines = new ArrayList<>();
         //Start by generating lines to test
         for (int i = 0; i < knownObjects.size(); i++) {
-            
+
         }
 
         return false;

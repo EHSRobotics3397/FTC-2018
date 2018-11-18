@@ -26,20 +26,40 @@ public class PhysObject {
     height is perpendicular
     to width on z axis
      */
-    public List<Coordinates> corners;
+    private List<Coordinates> corners;
 
 
-    public PhysObject(Coordinates coor, List<Coordinates> cor) {
-        position = coor;
-        corners = cor;
-        // Calculate 4th corner position, if not giver
+    public PhysObject(Coordinates pos, List<Coordinates> crners) {
+        position = pos;
+        corners = crners;
+        // Calculate 4th corner position, if not given
         if (corners.size() == 3) {
-            
+            double xDiffer = corners.get(1).x - corners.get(0).x;
+            double yDiffer = corners.get(1).y - corners.get(0).y;
+            double x = corners.get(2).x + xDiffer;
+            double y = corners.get(2).y + yDiffer;
+
+            Coordinates fourth = new Coordinates(x,y);
+            corners.add(fourth);
         }
     }
 
-    public void update(Coordinates coor, List<Coordinates> cor) {
-        position = coor;
-        corners = cor;
+    public void update(Coordinates pos, List<Coordinates> crners) {
+        position = pos;
+        corners = crners;
+        // Calculate 4th corner position, if not given
+        if (corners.size() == 3) {
+            double xDiffer = corners.get(1).x - corners.get(0).x;
+            double yDiffer = corners.get(1).y - corners.get(0).y;
+            double x = corners.get(2).x + xDiffer;
+            double y = corners.get(2).y + yDiffer;
+
+            Coordinates fourth = new Coordinates(x,y);
+            corners.add(fourth);
+        }
+    }
+
+    public List<Coordinates> getCorners() {
+        return corners;
     }
 }
