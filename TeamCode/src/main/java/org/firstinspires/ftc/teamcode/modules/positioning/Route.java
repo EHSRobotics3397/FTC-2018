@@ -39,5 +39,7 @@ public class Route {
         status = false;
     }
 
-    public void addSeg
+    public void addSeg(RouteSeg seg) {
+        segs.add(seg);
+    }
 }
