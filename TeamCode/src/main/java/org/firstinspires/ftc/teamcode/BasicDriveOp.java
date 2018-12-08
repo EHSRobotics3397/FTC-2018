@@ -26,33 +26,40 @@ public class BasicDriveOp extends OpMode {
     private DcMotor motor2;
     private DcMotor motor3;
     private DcMotor motor4;
-    private IMURotate rotationFinder;
-    private BNO055IMU imu;
+    private GameButton   left_Bumper;
+    private GameButton   right_Bumper;
+    private GameButton   buttonA;
+    private GameButton   buttonB;
+    private GameButton   buttonX;
+
 
     public void init() {
         // Set values of driver and motor objects
         driver = new MecanumDrive();
-        rotationFinder = new IMURotate();
+        //rotationFinder = new IMURotate();
         motor1 = hardwareMap.dcMotor.get("motor1");
         motor2 = hardwareMap.dcMotor.get("motor2");
         motor3 = hardwareMap.dcMotor.get("motor3");
         motor4 = hardwareMap.dcMotor.get("motor4");
 
+        buttonA      = new GameButton(gamepad1, GameButton.Label.a);
+        buttonB      = new GameButton(gamepad1, GameButton.Label.b);
+        buttonX      = new GameButton(gamepad1, GameButton.Label.x);
+        right_Bumper  = new GameButton(gamepad1, GameButton.Label.RBumper);
+        left_Bumper = new GameButton(gamepad1, GameButton.Label.LBumper);
+
         //Reverse 3 & 4 and initialize driver and Rotation Finder
         motor3.setDirection(DcMotor.Direction.REVERSE);
         motor4.setDirection(DcMotor.Direction.REVERSE);
         driver.setup(motor1, motor2, motor3, motor4, gamepad1);
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        rotationFinder.setup(imu, telemetry);
-
-        telemetry.addData("Mode", "calibrating...");
     }
+    @Override
     public void loop() {
+        telemetry.addData("Mode", "Looped");
+
         // Update Rotation Finder and Driver
-        rotationFinder.update(telemetry);
-        driver.update();
+        //rotationFinder.update(telemetry);
+        driver.update(telemetry);
         /*Finite State machine will be used in Auto
         and maybe Main Op
          */
