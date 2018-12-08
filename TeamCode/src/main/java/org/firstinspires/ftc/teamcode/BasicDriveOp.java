@@ -56,6 +56,7 @@ public class BasicDriveOp extends OpMode {
     @Override
     public void loop() {
         telemetry.addData("Mode", "Looped");
+        telemetry.update();
 
         // Update Rotation Finder and Driver
         //rotationFinder.update(telemetry);

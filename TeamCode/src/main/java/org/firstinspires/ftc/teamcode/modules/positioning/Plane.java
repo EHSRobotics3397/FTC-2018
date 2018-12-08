@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Plane {
     // define public variables
-    public static int MAX_X;
-    public static int MAX_Y;
-    public static int MIN_X;
-    public static int MIN_Y;
+    private int MAX_X;
+    private int MAX_Y;
+    private int MIN_X;
+    private int MIN_Y;
 
     // define private variables
     // ArrayList object is used because it supports .add
@@ -53,12 +53,32 @@ public class Plane {
 
     public boolean isBlocked(Coordinates start, Coordinates end) {
         // if line from start to end intersects with ANY PhysObjects, return true
-        List<Line> lines = new ArrayList<>();
+        List<Line> lines = new ArrayList<Line>();
         //Start by generating lines to test
         for (int i = 0; i < knownObjects.size(); i++) {
-
+            List<Coordinates> objectCorners = knownObjects.get(i).getCorners();
+            for (int a = 0; a < 4; a++) {
+                
+                Line line = new Line(objectCorners.get(a), objectCorners.get(a + 1));
+            }
         }
 
         return false;
+    }
+
+    public int maxX () {
+        return MAX_X;
+    }
+
+    public int maxY () {
+        return MAX_Y;
+    }
+
+    public int minX () {
+        return MIN_X;
+    }
+
+    public int minY () {
+        return MIN_Y;
     }
 }
