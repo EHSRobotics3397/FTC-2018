@@ -58,7 +58,7 @@ public class Plane {
         for (int i = 0; i < knownObjects.size(); i++) {
             List<Coordinates> objectCorners = knownObjects.get(i).getCorners();
             for (int a = 0; a < 4; a++) {
-                
+
                 Line line = new Line(objectCorners.get(a), objectCorners.get(a + 1));
             }
         }

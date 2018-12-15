@@ -42,11 +42,11 @@ public class BasicDriveOp extends OpMode {
         motor3 = hardwareMap.dcMotor.get("motor3");
         motor4 = hardwareMap.dcMotor.get("motor4");
 
-        buttonA      = new GameButton(gamepad1, GameButton.Label.a);
+        /*buttonA      = new GameButton(gamepad1, GameButton.Label.a);
         buttonB      = new GameButton(gamepad1, GameButton.Label.b);
         buttonX      = new GameButton(gamepad1, GameButton.Label.x);
         right_Bumper  = new GameButton(gamepad1, GameButton.Label.RBumper);
-        left_Bumper = new GameButton(gamepad1, GameButton.Label.LBumper);
+        left_Bumper = new GameButton(gamepad1, GameButton.Label.LBumper);*/
 
         //Reverse 3 & 4 and initialize driver and Rotation Finder
         motor3.setDirection(DcMotor.Direction.REVERSE);
@@ -55,12 +55,11 @@ public class BasicDriveOp extends OpMode {
     }
     @Override
     public void loop() {
-        telemetry.addData("Mode", "Looped");
         telemetry.update();
 
         // Update Rotation Finder and Driver
         //rotationFinder.update(telemetry);
-        driver.update(telemetry);
+        driver.update();
         /*Finite State machine will be used in Auto
         and maybe Main Op
          */
