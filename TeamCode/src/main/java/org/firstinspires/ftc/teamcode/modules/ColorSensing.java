@@ -11,7 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Created by greenteam on 1/27/18.
  */
 
-public class ColorSensing {
+public class
+ColorSensing {
     private ColorSensor sensorColor;
     private DistanceSensor sensorDistance;
     private double distance;
