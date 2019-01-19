@@ -49,6 +49,7 @@ public class BasicDriveOp extends OpMode {
         left_Bumper = new GameButton(gamepad1, GameButton.Label.LBumper);*/
 
         //Reverse 3 & 4 and initialize driver and Rotation Finder
+        //Motor 3 and 4 are reversed as they are facing the other direction
         motor3.setDirection(DcMotor.Direction.REVERSE);
         motor4.setDirection(DcMotor.Direction.REVERSE);
         driver.setup(motor1, motor2, motor3, motor4, gamepad1);
