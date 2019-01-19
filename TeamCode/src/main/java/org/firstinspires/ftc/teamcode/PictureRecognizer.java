@@ -60,8 +60,20 @@ public class PictureRecognizer extends LinearOpMode {
         waitForStart();
         visionTargets.activate();
 
+
         while(opModeIsActive()) {
+            OpenGLMatrix pos = listener01.getPose();
+            if (pos != null) {
+                telemetry.addData("Robot pos: ",pos.formatAsTransform());
+            }
+
             // get position of robot from trackables
+            telemetry.update();
+            long startTime = System.currentTimeMillis();
+            //wait 1/2 second
+            while (!(System.currentTimeMillis() >= startTime + 500)) {
+                //do nothing
+            }
         }
     }
 

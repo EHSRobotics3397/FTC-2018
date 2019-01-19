@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -15,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class MecanumAutoDrive {
 
-    public enum State {IDLE, DRIVING, TURNING, COMPLETED, FAILED };
+    public enum State {IDLE, DRIVING, TURNING, COMPLETED, FAILED, TURNINGBYANGLE };
     private State  state;
     private String stateName;
     private String failReason;
@@ -72,6 +71,10 @@ public class MecanumAutoDrive {
             RunTurn();
             stateName = "TURNING";
         }
+        else if (state == State.TURNINGBYANGLE){
+            RunTurnByAngle();
+            stateName = "TURNINGBYANGLE";
+        }
         else if (state == State.FAILED) {
             StopMotors();
             stateName = "FAILED";
@@ -125,6 +128,14 @@ public class MecanumAutoDrive {
         ChangeState(State.TURNING);
     }
 
+    public void TurnByAngle(float angle, float power) { // negitive angle if you want to turn the other direction\
+        startAngle = currentAngle;
+        targetAngleDiff = angle; // change to time
+        //targetTime = duration * 1000;
+        targetPower = power;
+        ChangeState(State.TURNINGBYANGLE);
+    }
+
     //============================  state methods
     private void RunIdle() {
         //nada
@@ -158,9 +169,45 @@ public class MecanumAutoDrive {
             power[1] = -targetPower;
             power[2] = targetPower;
             power[3] = targetPower;
-            // if(targetAngle-currentAngle < 0.0) : motors in one direct
-            // else motors in other direction.
+
+        }
+    }
+
+    private void RunTurnByAngle() {
+        float angleTraveled = WrapOneEighty(currentAngle - startAngle);
+        float epsilon = 5.0f;
+        //this need more work.
+        //360degree problem
+
+        if ((Math.abs(currentAngle - startAngle) - targetAngleDiff) < epsilon)
+            //if (System.currentTimeMillis() - startTime > targetTime)
+            ChangeState(State.COMPLETED);
+        else {
+
+            /*power[0] = -targetPower;
+            power[1] = -targetPower;
+            power[2] = targetPower;
+            power[3] = targetPower;*/
+            //set up motordirection values
+            byte[] motorDirections = new byte[4];
+            if(targetAngleDiff-currentAngle < 0.0) {
+                //turn one direction
+                motorDirections[0] = -1;
+                motorDirections[1] = -1;
+                motorDirections[2] = 1;
+                motorDirections[3] = 1;
+            } else {
+                //turn other direction
+                motorDirections[0] = 1;
+                motorDirections[1] = 1;
+                motorDirections[2] = -1;
+                motorDirections[3] = -1;
+            }
             //set the motor power
+            power[0] = targetPower * (int) motorDirections[0];
+            power[1] = targetPower * (int) motorDirections[1];
+            power[2] = targetPower * (int) motorDirections[2];
+            power[3] = targetPower * (int) motorDirections[3];
         }
     }
 
