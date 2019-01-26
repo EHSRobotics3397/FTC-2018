@@ -4,7 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.modules.*;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.modules.positioning.*;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 
 import static org.firstinspires.ftc.teamcode.modules.MecanumAutoDrive.State.*;
 import static org.firstinspires.ftc.teamcode.modules.MecanumAutoDrive.*;
@@ -33,8 +34,18 @@ public class Auto01 extends OpMode {
 
     private float imuDirection;
 
+    //navigation and tracking
+    private VuforiaNavigation vuNav;
+    private NavigationOnThread navThread;
+    private MineralTracking minTrack;
+    private MineralTrackingOnThread minThread;
+
     //used in a higher-level finite state machine for step-by-step programming
     private int step;
+
+    public Auto01(float imuDirection) {
+        this.imuDirection = imuDirection;
+    }
 
     public void init() {
         motor1 = hardwareMap.dcMotor.get("motor1");
@@ -52,6 +63,16 @@ public class Auto01 extends OpMode {
         startTime = System.currentTimeMillis();
         //decide how many steps you want
 
+        //set up vuforia navigation and thread to run nav program
+        vuNav = new VuforiaNavigation();
+        navThread = new NavigationOnThread(vuNav);
+        navThread.start();
+        //set up thread to track minerals
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        minTrack = new MineralTracking(tfodMonitorViewId);
+        minThread = new MineralTrackingOnThread(minTrack);
+        minThread.start();
     }
 
 

@@ -1,19 +1,15 @@
-package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+package org.firstinspires.ftc.teamcode.modules.positioning;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.R;
+
+import java.util.ArrayList;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -24,7 +20,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 /**
  * Vuforia - Image Recognition
- * Created by Jeff Sprenger - Feb 3, 2018
+ * With code by Jeff Sprenger - Feb 3, 2018
  * Based on the video tutorial: FTC Tutorials - Vuforia Basics
  * https://www.youtube.com/watch?v=gbcdveLP-Ns
  *
@@ -34,9 +30,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  *     C:
  */
 
-@TeleOp(name = "ImageRecognition", group = "Vision")
-public class PictureRecognizer extends LinearOpMode {
+/* By Matthew Hull
+  * 1/26/19
+ */
 
+public class VuforiaNavigation {
     VuforiaLocalizer vuforiaLocalizer;
     VuforiaLocalizer.Parameters parameters;
     VuforiaTrackables visionTargets;
@@ -50,6 +48,7 @@ public class PictureRecognizer extends LinearOpMode {
     VuforiaTrackableDefaultListener redFootprintListener;
     VuforiaTrackableDefaultListener frontCratersListener;
     VuforiaTrackableDefaultListener backSpaceListener;
+    ArrayList<VuforiaTrackable> allTrackables;
 
     //matrices
     OpenGLMatrix blueRoverPositionOnField;
@@ -63,6 +62,8 @@ public class PictureRecognizer extends LinearOpMode {
     static final int BACK_SPACE = 3;
     static final int IMAGE_NONE = 4;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    private OpenGLMatrix lastLocation = null;
+    private boolean targetVisible = false;
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -73,22 +74,38 @@ public class PictureRecognizer extends LinearOpMode {
     //this key belongs to Essex Robotics
     public static final String VUFORIA_KEY = "ARDXCjL/////AAAAGXuBMxMI5EhrvrvaZoqpzmpfBmB1WDZJn56wtltNERZooZAfHDBUmdq10DYuq/f7VYSyV7pEtBGzGANIJJgM+ci+Kc/GrLyuKzoHPdV6VJAozfHadE2vFpBl5HnYUotKhCTC6ocsnEFZ9M1WaFh2KKSXXLOnQiPRWgYTq4o+KcUaY5Ki9BtcbnjSodBmcmW4lS/Qz6qfgdlHA/Dhm/XtLgtW7OhUwxyPg0i3ZKsQ8FyWNGkFZxd7yvo3p+AtzHb86o6hueWdP1mn1jZlcrp5IQILYBc4h11bngmmtUQ8EMsvaTLIDPivzSNjbrnlJ5WZNa2di5mr8tdTgByxmM3cadzS0U9VKG5KB6TCq2pcJvE9";
 
-    //simply checks for recognition of image A,B,C
-    public void runOpMode() throws InterruptedException {
 
+    public VuforiaNavigation() {
         setupVuforia();
-        waitForStart();
         visionTargets.activate();
 
+    }
 
-        while(opModeIsActive()) {
-            OpenGLMatrix pos = blueRoverListener.getUpdatedRobotLocation();
-            if (pos != null) {
-                telemetry.addData("Robot pos: ",pos.formatAsTransform());
+    // function that returns robot position
+    public OpenGLMatrix getRobotPosition() {
+        // check all the trackable target to see which one (if any) is visible.
+        targetVisible = false;
+        for (VuforiaTrackable trackable : allTrackables) {
+            if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
+                targetVisible = true;
+
+                // getUpdatedRobotLocation() will return null if no new information is available since
+                // the last time that call was made, or if the trackable is not currently visible.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+                break;
             }
+        }
 
-            // get position of robot from trackables
-            telemetry.update();
+        // Provide feedback as to where the robot is located (if we know).
+        if (targetVisible) {
+            // express position (translation) of robot in inches.
+            return lastLocation;
+        }
+        else {
+            return lastLocation;
         }
     }
 
@@ -139,6 +156,9 @@ public class PictureRecognizer extends LinearOpMode {
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, XYZ, DEGREES, 90, 0, -90));
         backSpace.setLocation(backSpaceLocationOnField);
 
+        allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables.addAll(visionTargets);
+
         final int CAMERA_FORWARD_DISPLACEMENT  = 110;   // eg: Camera is 110 mm in front of robot center
         final int CAMERA_VERTICAL_DISPLACEMENT = 200;   // eg: Camera is 200 mm above ground
         final int CAMERA_LEFT_DISPLACEMENT     = 0;     // eg: Camera is ON the robot's center line
@@ -147,5 +167,9 @@ public class PictureRecognizer extends LinearOpMode {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES,
                         CAMERA_CHOICE == FRONT ? 90 : -90, 0, 0));
+        for (VuforiaTrackable trackable : allTrackables)
+        {
+            ((VuforiaTrackableDefaultListener)trackable.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+        }
     }
 }
