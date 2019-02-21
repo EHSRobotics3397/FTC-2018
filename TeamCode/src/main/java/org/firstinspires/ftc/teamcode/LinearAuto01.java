@@ -32,7 +32,7 @@ public class LinearAuto01 extends LinearOpMode{
         waitForStart();
         //move lin acuator for 1/4 second
         // drive sideways for 1/2 second and drive forward for 3 seconds
-        final long LIFT_TIME = 9000;
+        final long LIFT_TIME = 9500;
         long targetTime = System.currentTimeMillis() + LIFT_TIME;
         motor5.setPower(100);
         while (targetTime - System.currentTimeMillis() > 0) {
