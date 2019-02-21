@@ -48,9 +48,11 @@ public class MecanumAutoDrive {
         ChangeState(State.IDLE);
     }
 
+    public void updateAngle(float angle) {
+        currentAngle = angle;
+    }
 
-
-    public void update(Telemetry telemetry, float imuDirection) {
+    public void update(Telemetry telemetry) {
         targetPower = 0; // for testing
 
         power[0] = 0;
@@ -58,7 +60,6 @@ public class MecanumAutoDrive {
         power[2] = 0;
         power[3] = 0;
 
-        currentAngle = imuDirection;
         if (state == State.IDLE){
             RunIdle();
             stateName = "IDLE";

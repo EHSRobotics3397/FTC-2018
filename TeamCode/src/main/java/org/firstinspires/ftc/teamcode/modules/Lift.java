@@ -12,23 +12,22 @@ Accuator by Matt Hull on Feb
 public class Lift {
 
     private DcMotor liftMotor;
-    private Gamepad gamePad;
     private GameButton upButton;
     private GameButton downButton;
 
     public Lift (DcMotor motor, Gamepad gpad) {
         liftMotor = motor;
-        upButton.buttonLabel = GameButton.Label.dpadUp;
-        downButton.buttonLabel = GameButton.Label.dpadDown;
+        upButton = new GameButton(gpad, GameButton.Label.dpadUp);
+        downButton = new GameButton(gpad, GameButton.Label.dpadDown);
     }
 
     public void update() {
         upButton.Update();
         downButton.Update();
         if (upButton.IsDown()) {
-            liftMotor.setPower(50);
+            liftMotor.setPower(100);
         } else if (downButton.IsDown()) {
-            liftMotor.setPower(-50);
+            liftMotor.setPower(-100);
         } else {
             liftMotor.setPower(0);
         }

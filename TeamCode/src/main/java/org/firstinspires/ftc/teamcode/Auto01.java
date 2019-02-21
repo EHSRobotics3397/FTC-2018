@@ -159,7 +159,7 @@ public class Auto01 extends OpMode {
         globalAngle += deltaAngle;
 
         lastAngles = angles;
-        driver.update(telemetry, (float) globalAngle); //need to add imu
+        driver.update(telemetry); //need to add imu
     }
 
     private void driveToLocation (OpenGLMatrix loc) {
